@@ -17,6 +17,7 @@ compatibility wrapper.
 - Generate a simple mapping file that associates each card name with a tier
   letter.
 - Command‑line lookup of cards by tier or by name using the mapping file.
+- Interactive REPL mode for repeated name→tier queries (`--tier`).
 - Optional OCR helper for future image‑to‑text work.
 
 ## Requirements
@@ -45,6 +46,7 @@ happens automatically and is transparent to the user.
 ```sh
 spire2 --name "Photon Cut"   # first run will display a setup message
 spire2 --search A            # list all cards in tier A
+spire2 --tier                 # enter interactive lookup mode
 spire2 --name "Celestial Might"
 ```
 
@@ -85,6 +87,7 @@ development:
 
 ```sh
 spire2 --search A            # show all cards in tier A
+spire2 --tier                 # interactive name→tier REPL
 spire2 --name "Celestial Might"  # display tier for a particular card
 spire2 --save ~/cards/          # download tiered images
 spire2 --map /tmp/foo.txt       # override the mappings location

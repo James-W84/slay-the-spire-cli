@@ -221,6 +221,11 @@ def main() -> None:
         metavar="CARD",
         help="look up a card by name and display its tier",
     )
+    parser.add_argument(
+        "--tier",
+        action="store_true",
+        help="enter interactive tier lookup REPL (case-insensitive)",
+    )
     args = parser.parse_args()
 
     cards: List[Dict] = []
@@ -245,7 +250,10 @@ def main() -> None:
         cards = load_cards(mapfile, save_root=args.save)
 
     # processing commands
-    if args.search:
+    if args.tier:
+        # interactive REPL loop; the cache and cards have already been loaded above
+        interactive_tier_loop(cards)
+    elif args.search:
         tier_letter = args.search.strip().upper()
         for entry in cards:
             if entry.get("tier", "").upper() == tier_letter:
@@ -267,6 +275,36 @@ def main() -> None:
             line = entry.get("name", entry.get("url", ""))
             tier = entry.get("tier", "?")
             print(f"[{tier}] {line}")
+
+
+def interactive_tier_loop(cards: List[Dict]) -> None:
+    """Run a simple REPL that looks up card tiers by name.
+
+    The loop continues until the user types ``exit`` or ``quit`` or hits
+    Ctrl+C/EOF. Input is treated case-insensitively and spaces may be used
+    without quoting. A minimal prompt (``>> ``) is displayed to match the
+    user's specification.
+    """
+    try:
+        while True:
+            user = input(">> ").strip()
+            if not user:
+                continue
+            if user.lower() in ("exit", "quit"):
+                break
+            found = False
+            lookup = user.lower()
+            for entry in cards:
+                if entry.get("name", "").lower() == lookup:
+                    tier = entry.get("tier", "?")
+                    print(f"This card is tier {tier}.")
+                    found = True
+                    break
+            if not found:
+                print("Card not found.")
+    except (KeyboardInterrupt, EOFError):
+        # graceful exit on Ctrl+C or EOF
+        print()
 
 
 if __name__ == "__main__":
