@@ -1,0 +1,105 @@
+Metadata-Version: 2.4
+Name: spire2
+Version: 0.1.0
+Summary: CLI tool for querying Slay the Spire 2 card tier lists
+Author-email: Your Name <you@example.com>
+Description-Content-Type: text/markdown
+Requires-Dist: requests
+Requires-Dist: beautifulsoup4
+
+# Slay the Spire Tier List Scraper
+
+This small Python utility scrapes card images from the Mobalytics Slay the
+Spire 2 tier list page and helps you organise, map and query them by tier.
+It is designed for offline lookups after the initial data has been collected.
+
+## Features
+
+- Download tiered card images, organised by champion (Regent, Ironclad,
+  Silent) and tier (`S` through `D`).
+- Generate a simple mapping file that associates each card name with a tier
+  letter.
+- Command‑line lookup of cards by tier or by name using the mapping file.
+- Optional OCR helper for future image‑to‑text work.
+
+## Requirements
+
+- Python 3.9+
+- `requests`, `beautifulsoup4` (installed via `pip install -r requirements.txt` or
+  individually)
+
+> **Supported content**: this tool only works with Slay the Spire 2 cards for
+> the three champions currently covered by the tier lists – the Watcher (also
+> known as the Regent on the site), the Silent and the Ironclad. Other
+> champions are not available and will not be found in the mapping file.
+
+## Usage
+
+Run the script from the repository root. For convenience you can
+create an alias or symlink (for example `sts` or `sts-tierlist`) and invoke it
+as a more compact command; the CLI also permits a redundant `tierlist`
+subcommand if you prefer the form `sts tierlist`.
+
+```sh
+alias sts=python sts2tierlistscraper.py
+# or create a small wrapper /usr/local/bin/sts-tierlist pointing at the script
+```
+
+### Generating data
+
+```sh
+# scrape the site, download images into `tier_images/`, and write mapping to file
+sts --save tier_images --map mappings.txt
+# or equivalently:
+python sts2tierlistscraper.py --save tier_images --map mappings.txt
+```
+
+The mapping file will look like:
+
+```
+'Adrenaline'=>'S'
+'Big Bang'=>'S'
+'Gamma Blast'=>'A'
+...
+```
+
+Once you have `mappings.txt`, you no longer need a network connection for
+lookups.
+
+### Querying
+
+Assuming the `sts` alias/wrapper described above is in place, examples:
+
+```sh
+# list all cards in tier A
+sts --map mappings.txt --search A
+
+# look up a specific card by name
+sts --map mappings.txt --name "Celestial Might"
+```
+
+The CLI is case-insensitive for the card name and tier letter.
+
+If you only run with `--map` the script will load the file and skip any
+network activity unless the file is missing or `--save` is also provided.
+
+### Other options
+
+- `--map FILE` : path to mapping file to read/write
+- `--save DIR` : root directory to store downloaded card images
+- `--search TIER` : show card names for specified tier letter
+- `--name CARD` : lookup tier for specified card name
+
+## Development
+
+The core scraping logic is in `sts2tierlistscraper.py`. You can extend it or
+reuse the helper functions (`scrape_images`, `extract_mappings`,
+`load_mappings`).
+
+Be mindful that the target page is heavy on JavaScript; the parser relies on
+static HTML structures and the JSON blob present on initial page load. If
+the site changes, the selectors may need updating.
+
+## License
+
+None

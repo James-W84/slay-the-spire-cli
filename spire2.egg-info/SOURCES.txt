@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+spire2.egg-info/PKG-INFO
+spire2.egg-info/SOURCES.txt
+spire2.egg-info/dependency_links.txt
+spire2.egg-info/entry_points.txt
+spire2.egg-info/requires.txt
+spire2.egg-info/top_level.txt
+spire2_pkg/__init__.py
+spire2_pkg/main.py

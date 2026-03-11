@@ -1,0 +1,2 @@
+[console_scripts]
+spire2 = spire2_pkg.main:main

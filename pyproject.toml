@@ -1,0 +1,20 @@
+[project]
+name = "spire2"
+version = "0.1.0"
+description = "CLI tool for querying Slay the Spire 2 card tier lists"
+authors = [
+    { name = "Your Name", email = "you@example.com" },
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+dependencies = [
+    "requests",
+    "beautifulsoup4",
+]
+
+[project.scripts]
+spire2 = "spire2_pkg.main:main"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
