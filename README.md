@@ -31,12 +31,13 @@ python sts2tierlistscraper.py --save tier_images --map mappings.txt
 ```
 
 The mapping file will look like:
+
 ```
 'Adrenaline'=>'S'
 'Big Bang'=>'S'
 'Gamma Blast'=>'A'
 ...
-``` 
+```
 
 Once you have `mappings.txt`, you no longer need a network connection for
 lookups.
@@ -63,14 +64,14 @@ network activity unless the file is missing or `--save` is also provided.
 
 ## Development
 
-The core scraping logic is in `sts2tierlistscraper.py`.  You can extend it or
+The core scraping logic is in `sts2tierlistscraper.py`. You can extend it or
 reuse the helper functions (`scrape_images`, `extract_mappings`,
 `load_mappings`).
 
 Be mindful that the target page is heavy on JavaScript; the parser relies on
-static HTML structures and the JSON blob present on initial page load.  If
+static HTML structures and the JSON blob present on initial page load. If
 the site changes, the selectors may need updating.
 
 ## License
 
-MIT (choose whatever license you prefer).
+None
