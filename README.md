@@ -19,14 +19,28 @@ It is designed for offline lookups after the initial data has been collected.
 - `requests`, `beautifulsoup4` (installed via `pip install -r requirements.txt` or
   individually)
 
+> **Supported content**: this tool only works with Slay the Spire 2 cards for
+> the three champions currently covered by the tier lists – the Watcher (also
+> known as the Regent on the site), the Silent and the Ironclad. Other
+> champions are not available and will not be found in the mapping file.
+
 ## Usage
 
-Run the script from the repository root.
+Run the script from the repository root. For convenience you can
+create an alias or symlink (for example `sts tierlist`) and invoke it as a
+more compact command:
+
+```sh
+alias sts=python sts2tierlistscraper.py
+# or create a small wrapper /usr/local/bin/sts-tierlist pointing at the script
+```
 
 ### Generating data
 
 ```sh
 # scrape the site, download images into `tier_images/`, and write mapping to file
+sts --save tier_images --map mappings.txt
+# or equivalently:
 python sts2tierlistscraper.py --save tier_images --map mappings.txt
 ```
 
@@ -44,13 +58,17 @@ lookups.
 
 ### Querying
 
+Assuming the `sts` alias/wrapper described above is in place, examples:
+
 ```sh
 # list all cards in tier A
-python sts2tierlistscraper.py --map mappings.txt --search A
+sts --map mappings.txt --search A
 
-# look up a specific card
-python sts2tierlistscraper.py --map mappings.txt --name "Largesse"
+# look up a specific card by name
+sts --map mappings.txt --name "Celestial Might"
 ```
+
+The CLI is case-insensitive for the card name and tier letter.
 
 If you only run with `--map` the script will load the file and skip any
 network activity unless the file is missing or `--save` is also provided.
