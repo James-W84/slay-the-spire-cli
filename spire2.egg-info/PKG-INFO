@@ -7,11 +7,17 @@ Description-Content-Type: text/markdown
 Requires-Dist: requests
 Requires-Dist: beautifulsoup4
 
-# Slay the Spire Tier List Scraper
+# spire2
 
-This small Python utility scrapes card images from the Mobalytics Slay the
-Spire 2 tier list page and helps you organise, map and query them by tier.
-It is designed for offline lookups after the initial data has been collected.
+`spire2` is a command–line tool for querying Slay the Spire 2 card tier
+lists. Internally it scrapes the Mobalytics tier list page, caches the
+results in `~/.spire2/` and allows fast lookups by card name or tier. The
+user experience is "zero‑config": after installing the package nothing else
+needs to be specified.
+
+The project is structured as an installable Python package with an entry
+tool; the original standalone script has been retained only as a thin
+compatibility wrapper.
 
 ## Features
 
@@ -20,6 +26,7 @@ It is designed for offline lookups after the initial data has been collected.
 - Generate a simple mapping file that associates each card name with a tier
   letter.
 - Command‑line lookup of cards by tier or by name using the mapping file.
+- Interactive REPL mode for repeated name→tier queries (`--tier`).
 - Optional OCR helper for future image‑to‑text work.
 
 ## Requirements
@@ -35,14 +42,31 @@ It is designed for offline lookups after the initial data has been collected.
 
 ## Usage
 
-Run the script from the repository root. For convenience you can
-create an alias or symlink (for example `sts` or `sts-tierlist`) and invoke it
-as a more compact command; the CLI also permits a redundant `tierlist`
-subcommand if you prefer the form `sts tierlist`.
+Install the package (editable mode during development):
 
 ```sh
-alias sts=python sts2tierlistscraper.py
-# or create a small wrapper /usr/local/bin/sts-tierlist pointing at the script
+pip install -e .
+```
+
+An executable named `spire2` will be placed on your `PATH`. The first time
+you run any command the tool will fetch and cache the tier list data; this
+happens automatically and is transparent to the user.
+
+```sh
+spire2 --name "Photon Cut"   # first run will display a setup message
+spire2 --search A            # list all cards in tier A
+spire2 --tier                 # enter interactive lookup mode
+spire2 --name "Celestial Might"
+```
+
+Subsequent invocations use the local cache and return instantly. The cached
+mappings are automatically refreshed every three days.
+
+If you prefer the legacy script instead of the package entry point you can
+still run:
+
+```sh
+python sts2tierlistscraper.py --name "Photon Cut"
 ```
 
 ### Generating data
@@ -63,32 +87,37 @@ The mapping file will look like:
 ...
 ```
 
-Once you have `mappings.txt`, you no longer need a network connection for
-lookups.
-
 ### Querying
 
-Assuming the `sts` alias/wrapper described above is in place, examples:
+By default `spire2` uses a mappings file at `~/.spire2/mappings.txt` which is
+maintained automatically; you should not need to pass `--map` or deal with
+paths. Nevertheless the old options remain available for power users or
+development:
 
 ```sh
-# list all cards in tier A
-sts --map mappings.txt --search A
-
-# look up a specific card by name
-sts --map mappings.txt --name "Celestial Might"
+spire2 --search A            # show all cards in tier A
+spire2 --tier                 # interactive name→tier REPL
+spire2 --name "Celestial Might"  # display tier for a particular card
+spire2 --save ~/cards/          # download tiered images
+spire2 --map /tmp/foo.txt       # override the mappings location
 ```
 
-The CLI is case-insensitive for the card name and tier letter.
+The `--save` flag still behaves as before, writing images organised by
+champion and tier.
 
-If you only run with `--map` the script will load the file and skip any
-network activity unless the file is missing or `--save` is also provided.
+### Advanced / Development
 
-### Other options
+The package's core logic lives in `spire2_pkg/main.py`. The legacy
+`sts2tierlistscraper.py` file now simply wraps this module and is provided
+for backwards compatibility; new development should target the package
+itself.
 
-- `--map FILE` : path to mapping file to read/write
-- `--save DIR` : root directory to store downloaded card images
-- `--search TIER` : show card names for specified tier letter
-- `--name CARD` : lookup tier for specified card name
+Existing helper functions such as `scrape_images`, `extract_mappings` and
+`load_mappings` are available for reuse in scripts or tests.
+
+## License
+
+None
 
 ## Development
 

@@ -8,3 +8,4 @@ spire2.egg-info/requires.txt
 spire2.egg-info/top_level.txt
 spire2_pkg/__init__.py
 spire2_pkg/main.py
+tests/test_main.py
