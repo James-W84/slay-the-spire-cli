@@ -1,0 +1,5 @@
+[
+  "tests/test_main.py::test_interactive_loop_ctrlc",
+  "tests/test_main.py::test_interactive_loop_found",
+  "tests/test_main.py::test_interactive_loop_not_found"
+]
